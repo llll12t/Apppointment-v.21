@@ -16,12 +16,10 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;700&display=swap"
-        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;700&display=swap" rel="stylesheet" />
 
     <style>
-        :root {
+         :root {
             /* Primary */
             --primary: #2f1a87;
             --primary-light: #7a6bb6;
@@ -55,39 +53,37 @@
             --badge-full-bg: #fee2e2;
             --badge-full-text: #b91c1c;
         }
-
         /* Utility classes */
-
+        
         .bg-base {
             background-color: var(--bg) !important;
         }
-
+        
         .bg-card {
             background-color: var(--bg-card) !important;
         }
-
+        
         .bg-element {
             background-color: var(--bg-element) !important;
         }
-
+        
         .border-element {
             border: 1px solid var(--border) !important;
         }
-
+        
         .text-base {
             color: var(--text-main) !important;
         }
-
+        
         .text-placeholder {
             color: var(--text-placeholder) !important;
         }
-
+        
         .text-error {
             color: var(--text-error) !important;
         }
-
         /* Overlays */
-
+        
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -103,14 +99,14 @@
             transition: opacity 0.3s ease-in-out;
             pointer-events: none;
         }
-
+        
         .loading-overlay.visible {
             display: flex;
             opacity: 1;
             pointer-events: auto;
         }
-
         /* Animation for spinner */
+        
         .loading-spinner {
             border: 4px solid rgba(255, 255, 255, 0.3);
             border-top: 4px solid var(--primary);
@@ -120,17 +116,16 @@
             height: 40px;
             animation: spin 1s linear infinite;
         }
-
+        
         @keyframes spin {
             0% {
                 transform: rotate(0deg);
             }
-
             100% {
                 transform: rotate(360deg);
             }
         }
-
+        
         .popup {
             position: fixed;
             top: 0;
@@ -146,13 +141,13 @@
             transition: opacity 0.3s ease-in-out;
             pointer-events: none;
         }
-
+        
         .popup.visible {
             display: flex;
             opacity: 1;
             pointer-events: auto;
         }
-
+        
         .popup-content {
             background: var(--bg-card);
             color: var(--text-main);
@@ -162,7 +157,7 @@
             max-width: 350px;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
         }
-
+        
         body {
             font-family: 'Inter', 'Noto Sans Thai', sans-serif;
             margin: 0;
@@ -170,12 +165,12 @@
             color: var(--text-main);
             overscroll-behavior-y: contain;
         }
-
-        ::selection {
+        
+         ::selection {
             background-color: var(--primary);
             color: #fff;
         }
-
+        
         input[type='text'],
         input[type='tel'],
         textarea,
@@ -188,12 +183,12 @@
             width: 100%;
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
-
+        
         input::placeholder,
         textarea::placeholder {
             color: var(--text-placeholder);
         }
-
+        
         input:focus,
         textarea:focus,
         select:focus {
@@ -201,16 +196,15 @@
             border-color: var(--primary-light);
             box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.5);
         }
-
         /* Flatpickr */
-
+        
         #inlineCalendar-wrapper {
             background-color: var(--bg-card);
             padding: 0.5rem;
             border-radius: 0.75rem;
             margin-bottom: 1rem;
         }
-
+        
         .flatpickr-calendar {
             background: transparent !important;
             box-shadow: none !important;
@@ -218,7 +212,7 @@
             max-width: 320px;
             margin: auto;
         }
-
+        
         .flatpickr-day {
             color: var(--text-main) !important;
             background: transparent !important;
@@ -229,15 +223,15 @@
             line-height: 40px !important;
             transition: background-color 0.2s ease, border-color 0.2s ease;
         }
-
+        
         .flatpickr-day:hover {
             background-color: var(--bg-element);
         }
-
+        
         .flatpickr-day.today {
             border-color: var(--primary-light) !important;
         }
-
+        
         .flatpickr-day.selected,
         .flatpickr-day.startRange,
         .flatpickr-day.endRange {
@@ -245,7 +239,7 @@
             color: #fff !important;
             /* Font color is white */
         }
-
+        
         .flatpickr-day.flatpickr-disabled,
         .flatpickr-day.prevMonthDay,
         .flatpickr-day.nextMonthDay {
@@ -253,15 +247,14 @@
             opacity: 0.6;
             cursor: default;
         }
-
         /* Time options */
-
+        
         #timeDropdown {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
             gap: 0.75rem;
         }
-
+        
         .time-option {
             display: flex;
             flex-direction: column;
@@ -276,19 +269,19 @@
             cursor: pointer;
             transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
         }
-
+        
         .time-option:hover {
             border-color: var(--primary-light);
             transform: translateY(-2px);
         }
-
+        
         .time-option.selected {
             background: var(--primary);
             color: #fff;
             /* White font color for selected time slot */
             border-color: var(--primary);
         }
-
+        
         .badge {
             border-radius: 9999px;
             padding: 0.125rem 0.5rem;
@@ -297,30 +290,29 @@
             min-width: 3rem;
             text-align: center;
         }
-
+        
         .badge.available {
             background: var(--badge-available-bg);
             color: var(--badge-available-text);
         }
-
+        
         .badge.full {
             background: var(--badge-full-bg);
             color: var(--badge-full-text);
         }
-
+        
         .time-option.opacity-50 {
             opacity: 0.6;
             pointer-events: none;
             background-color: var(--border);
         }
-
+        
         .time-option.opacity-50:hover {
             transform: none;
             border-color: transparent;
         }
-
         /* Steps */
-
+        
         .step {
             padding: 1rem;
             border-radius: 0.75rem;
@@ -330,62 +322,59 @@
             top: 0;
             left: 0;
         }
-
+        
         .step:not(.step-active) {
             opacity: 0;
             transform: translateY(15px);
             pointer-events: none;
         }
-
+        
         .step.step-active {
             opacity: 1;
             transform: translateY(0);
             pointer-events: auto;
             position: relative;
         }
-
         /* Branch cards */
-
+        
         #branchCards .branch-card {
             background: var(--bg-element);
             border: 1px solid var(--border);
             color: var(--text-main);
             transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
         }
-
+        
         #branchCards .branch-card:hover {
             border-color: var(--primary-light);
             transform: translateY(-2px);
         }
-
+        
         #branchCards .branch-card.selected {
             background: var(--primary);
             border-color: var(--primary);
             color: #fff;
         }
-
         /* Service cards */
-
+        
         #serviceCards .service-card {
             background: var(--bg-element);
             border: 1px solid var(--border);
             color: var(--text-main);
             transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
         }
-
+        
         #serviceCards .service-card:hover {
             border-color: var(--primary-light);
             transform: translateY(-2px);
         }
-
+        
         #serviceCards .service-card.selected {
             background: var(--primary);
             border-color: var(--primary);
             color: #fff;
         }
-
         /* Buttons */
-
+        
         .btn {
             padding: 0.875rem 1rem;
             border-radius: 0.5rem;
@@ -394,26 +383,26 @@
             cursor: pointer;
             transition: background-color 0.2s ease, transform 0.1s ease;
         }
-
+        
         .btn:hover {
             transform: translateY(-1px);
         }
-
+        
         .btn-primary {
             background: var(--primary);
             color: #fff;
         }
-
+        
         .btn-primary:hover {
             background: var(--primary-light);
         }
-
+        
         .btn-secondary {
             background: var(--bg-element);
             color: var(--text-main);
             border: 1px solid var(--border);
         }
-
+        
         .btn-secondary:hover {
             background: var(--border);
         }
@@ -434,8 +423,7 @@
     <div class="w-full max-w-md mx-auto p-4 flex-1 flex flex-col">
         <!-- Header -->
         <div id="header" class="flex items-center p-4">
-            <img id="greetingAvatar" src="" alt="Avatar"
-                class="w-12 h-12 rounded-full object-cover border-2 border-element mr-4" />
+            <img id="greetingAvatar" src="" alt="Avatar" class="w-12 h-12 rounded-full object-cover border-2 border-element mr-4" />
             <div>
                 <p id="greetingPrefix" class="text-base">สวัสดีตอนเช้า</p>
                 <h1 id="greetingName" class="text-primary font-bold text-lg"> LINE NAME </h1>
@@ -503,11 +491,10 @@
                     ข้อมูลติดต่อ
                 </label>
                 <input type="text" id="name" name="name" placeholder="ชื่อ-สกุล" class="mb-3 border-element" required />
-                <input type="tel" id="phonenumber" name="phonenumber" placeholder="เบอร์ติดต่อ"
-                    class="mb-3 border-element" required />
+                <input type="tel" id="phonenumber" name="phonenumber" placeholder="เบอร์ติดต่อ" class="mb-3 border-element" required />
 
                 <!-- *** เพิ่ม: สิทธิการรักษา *** -->
-                <select id="treatmentPrivilege" name="treatmentPrivilege" class="mb-3 border-element" required>
+                <select id="treatmentPrivilege" name="treatmentPrivilege" class="mb-3 p-4 border-element" required>
                     <option value="">เลือกสิทธิการรักษา</option>
                     <option value="ทั่วไป">ทั่วไป</option>
                     <option value="บัตรทอง">บัตรทอง</option>
@@ -517,8 +504,7 @@
                 </select>
                 <!-- *** สิ้นสุดการเพิ่ม *** -->
 
-                <textarea id="note" name="note" rows="3" placeholder="หมายเหตุ (ถ้ามี)"
-                    class="mb-6 p-2 resize-none border-element"></textarea>
+                <textarea id="note" name="note" rows="3" placeholder="หมายเหตุ (ถ้ามี)" class="mb-6 p-2 resize-none border-element"></textarea>
                 <div class="flex space-x-3">
                     <button type="button" id="backToStep2" class="btn btn-secondary flex-1"> ย้อนกลับ </button>
                     <button type="button" id="nextToStep4" class="btn btn-primary flex-1"> ถัดไป </button>
@@ -550,7 +536,7 @@
                         <span>เบอร์:</span><span id="confirmPhone" class="font-semibold"></span>
                     </div>
                     <!-- *** เพิ่ม: สิทธิการรักษา ในหน้ายืนยัน *** -->
-                    <div class="flex justify-between items-center border-b pb-2">
+                    <div class="flex justify-between items-center border-b  pb-2">
                         <span>สิทธิรักษา:</span><span id="confirmPrivilege" class="font-semibold"></span>
                     </div>
                     <!-- *** สิ้นสุดการเพิ่ม *** -->
@@ -570,7 +556,7 @@
             <input type="hidden" id="selectedServices" name="selectedServices" />
             <input type="hidden" id="selectedServiceNames" name="selectedServiceNames" />
             <input type="hidden" id="userlineid" name="userlineid" value />
-            <input type="hidden" id="selectedBranchId" name="selectedBranchId" />
+            <input type="hidden" id="selectedBranchId" name="branchId" />
             <input type="hidden" id="selectedBranchName" name="selectedBranchName" />
             <input type="hidden" name="action" value="makeBooking" />
         </form>
@@ -655,12 +641,12 @@
             return hour < 12 ?
                 'สวัสดีตอนเช้า' :
                 hour < 13 ?
-                    'สวัสดีตอนเที่ยง' :
-                    hour < 17 ?
-                        'สวัสดีตอนบ่าย' :
-                        hour < 19 ?
-                            'สวัสดีตอนเย็น' :
-                            'ราตรีสวัสดิ์';
+                'สวัสดีตอนเที่ยง' :
+                hour < 17 ?
+                'สวัสดีตอนบ่าย' :
+                hour < 19 ?
+                'สวัสดีตอนเย็น' :
+                'ราตรีสวัสดิ์';
         }
 
         async function initLiff() {
@@ -823,7 +809,7 @@
                         dayElem.innerHTML += `<span class="block text-xs text-error opacity-75 mt-[-8px]">หยุด</span>`;
                     }
                 },
-                onMonthChange: async (_, __, fp) => {
+                onMonthChange: async(_, __, fp) => {
                     showLoading(true);
                     await fetchMonthAvailability(fp.currentYear, fp.currentMonth + 1);
                     fp.redraw();
@@ -955,7 +941,7 @@
         };
         $('backToStep0').onclick = () => navigateToStep('step0');
 
-        $('nextToStep2').onclick = async () => {
+        $('nextToStep2').onclick = async() => {
             if (!JSON.parse($('selectedServices').value || '[]').length)
                 return showPopup('กรุณาเลือกบริการอย่างน้อย 1 รายการ');
 
@@ -1032,7 +1018,10 @@
                     // If JSON parsing fails, it's an unexpected response format
                     console.error("JSON parsing error from server response:", jsonErr, "Raw response text:", text);
                     // Treat non-JSON response as a potential error, or generic success if HTTP status is OK
-                    result = { success: resp.ok, message: text || "การตอบกลับจากเซิร์ฟเวอร์ผิดปกติ" };
+                    result = {
+                        success: resp.ok,
+                        message: text || "การตอบกลับจากเซิร์ฟเวอร์ผิดปกติ"
+                    };
                 }
 
                 // Check the 'success' flag from the backend response
@@ -1112,7 +1101,7 @@
                     wrap: true,
                     color: varToHex('--text-main2'),
                     flex: 9,
-                },],
+                }, ],
             }));
             if (!serviceContents.length) {
                 serviceContents.push({
@@ -1145,7 +1134,7 @@
                         size: 'xs',
                         align: 'center',
                         color: '#ffffff',
-                    },],
+                    }, ],
                 },
                 body: {
                     type: 'box',
@@ -1154,9 +1143,11 @@
                     paddingAll: 'xl',
                     backgroundColor: varToHex('--bg-card'),
                     contents: [
-                        makeFieldBox('สาขา', branchName),
-                        { type: 'separator', margin: 'md', color: varToHex('--text-main') },
-                        {
+                        makeFieldBox('สาขา', branchName), {
+                            type: 'separator',
+                            margin: 'md',
+                            color: varToHex('--text-main')
+                        }, {
                             type: 'text',
                             text: 'บริการ:',
                             size: 'sm',
@@ -1190,7 +1181,7 @@
                     type: 'flex',
                     altText: 'รายละเอียดการจองของคุณ',
                     contents: bubble,
-                },]);
+                }, ]);
             } catch (e) {
                 console.error('Error sending flex message:', e);
                 showPopup('ไม่สามารถส่งข้อความยืนยันการจองใน LINE ได้: ' + e.message);
@@ -1222,7 +1213,7 @@
                     size: 'sm',
                     wrap: true,
                     flex: 5,
-                },],
+                }, ],
             };
         }
 
@@ -1235,7 +1226,7 @@
         }
 
         // Main entry point when DOM is loaded
-        document.addEventListener('DOMContentLoaded', async () => {
+        document.addEventListener('DOMContentLoaded', async() => {
             showLoading(true);
             // Set initial step and make it visible
             $(currentVisibleStep).classList.add('step-active');
