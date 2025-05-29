@@ -186,6 +186,11 @@
                 <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 gap-3">
                     <h3 class="text-xl font-semibold text-slate-800 font-thai">ภาพรวมนัดหมาย</h3>
                     <div class="flex flex-wrap items-center space-x-0 md:space-x-3 gap-2 md:gap-0">
+                        <!-- NEW: Branch Filter Dropdown -->
+                        <select id="branchFilter" class="p-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 font-thai">
+                            <option value="">ทุกสาขา</option>
+                            <!-- Options will be dynamically loaded by JavaScript -->
+                        </select>
                         <select id="statusFilter" class="p-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 font-thai">
                             <option value="">สถานะทั้งหมด</option>
                             <option value="รอการยืนยัน">รอการยืนยัน</option>
@@ -242,6 +247,7 @@
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-thai">ชื่อ</th>
+                                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-thai">สาขา</th> <!-- NEW -->
                                         <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-thai">วันที่/เวลา</th>
                                         <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-thai">บริการ</th>
                                         <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-thai">เบอร์โทร</th>
@@ -265,7 +271,7 @@
     </div>
 
     <script>
-        const DETAILS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw-Yjv94ffGn98tweURPh1cxDfegwcffZg8dZ_YsZDqwxi2L4G6Q_hIETG1Wv5IMP3V/exec';
+        const DETAILS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwRDs7takd9ozlconIGh3kVaBBzjMKP1Il_cOSVZ_RMkJNigputZPMFvA3GYtSi1QOCDA/exec';
         let allAppointmentsData = [];
         let currentView = 'kanban'; // 'kanban' or 'list'
         let currentPage = 1;
@@ -281,6 +287,7 @@
         const nameSearchInput = document.getElementById('nameSearch');
         const statusFilterSelect = document.getElementById('statusFilter');
         const dateSortSelect = document.getElementById('dateSort');
+        const branchFilterSelect = document.getElementById('branchFilter'); // NEW
 
         const tabsContainer = document.getElementById('tabsContainer');
         const tabContents = document.querySelectorAll('[data-tab-content]');
@@ -343,6 +350,11 @@
                 currentPage = 1;
                 renderCurrentView();
             });
+            // NEW: Event listener for branch filter
+            branchFilterSelect.addEventListener('change', () => {
+                currentPage = 1;
+                renderCurrentView();
+            });
 
             tabsContainer.addEventListener('click', (e) => {
                 const targetButton = e.target.closest('.tab-button');
@@ -374,8 +386,36 @@
                 if (!Array.isArray(data)) {
                     console.warn('API ไม่ได้คืน Array มา แต่เป็น:', typeof data, data);
                 }
-                // …แล้วค่อย map
-                allAppointmentsData = (Array.isArray(data) ? data : []).map(d => ({ /* … */ }));
+                allAppointmentsData = (Array.isArray(data) ? data : []).map(d => {
+                    // แปลงเวลา ISO string ให้เหลือแค่ HH:mm
+                    let timeStr = d.time;
+                    try {
+                    timeStr = new Date(d.time)
+                        .toLocaleTimeString('th-TH',{ hour:'2-digit', minute:'2-digit' });
+                    } catch(e) { /* ถ้าแปลงไม่สำเร็จ ก็ใช้ raw string */ }
+
+                    // แปลงวันที่ dd-mm-yyyy -> Date object สำหรับ sort
+                    const [dd,mm,yyyy] = d.date.split('-');
+                    const parsedDate   = new Date(`${yyyy}-${mm}-${dd}T${timeStr}`);
+
+                    return {
+                        idKey:              d.idKey,
+                        branchId:           d.branchId, // Make sure branchId is included
+                        userlineid:         d.userlineid,
+                        name:               d.name,
+                        phonenumber:        d.phonenumber,
+                        treatmentPrivilege: d.treatmentPrivilege,
+                        note:               d.note,
+                        service:            d.service,
+                        price:              d.price,
+                        date:               d.date,
+                        time:               timeStr,
+                        status:             d.status,
+                        timestamp:          d.timestamp,
+                        parsedDate
+                    };
+                });
+                populateBranchFilter(allAppointmentsData); // NEW: Populate the branch filter
                 renderCurrentView();
             } catch (err) {
                 console.error("Error fetching initial data:", err);
@@ -385,17 +425,42 @@
             }
         }
 
+        // NEW FUNCTION: Populates the branch filter dropdown
+        function populateBranchFilter(data) {
+            const uniqueBranches = [...new Set(data.map(item => item.branchId))].sort();
+            
+            // Clear existing options, then add default "ทุกสาขา"
+            branchFilterSelect.innerHTML = '<option value="">ทุกสาขา</option>'; 
+            
+            // Add unique branches to the dropdown
+            uniqueBranches.forEach(branch => {
+                if (branch) { // Ensure branchId is not empty or null
+                    const option = document.createElement('option');
+                    option.value = branch;
+                    option.textContent = branch;
+                    branchFilterSelect.appendChild(option);
+                }
+            });
+        }
+
 
         function filterAndSortData() {
             let filtered = [...allAppointmentsData];
             const searchTerm = nameSearchInput.value.toLowerCase();
+            const status = statusFilterSelect.value;
+            const selectedBranch = branchFilterSelect.value; // NEW: Get selected branch
+
             if (searchTerm) {
                 filtered = filtered.filter(d => d.name.toLowerCase().includes(searchTerm) || d.phonenumber.includes(searchTerm) || d.service.toLowerCase().includes(searchTerm));
             }
-            const status = statusFilterSelect.value;
             if (status) {
                 filtered = filtered.filter(d => d.status === status);
             }
+            // NEW: Apply branch filter
+            if (selectedBranch) {
+                filtered = filtered.filter(d => d.branchId === selectedBranch);
+            }
+            
             const sortOrder = dateSortSelect.value;
             filtered.sort((a, b) => sortOrder === 'latest' ? b.parsedDate - a.parsedDate : a.parsedDate - b.parsedDate);
             return filtered;
@@ -474,7 +539,7 @@
             const paginatedData = data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
             if (paginatedData.length === 0) {
-                appointmentTableBody.innerHTML = `<tr><td colspan="8" class="text-center text-gray-500 p-4 font-thai">ไม่พบข้อมูลที่ตรงกับเงื่อนไข</td></tr>`;
+                appointmentTableBody.innerHTML = `<tr><td colspan="9" class="text-center text-gray-500 p-4 font-thai">ไม่พบข้อมูลที่ตรงกับเงื่อนไข</td></tr>`; <!-- Updated colspan from 8 to 9 -->
                 renderPagination(0, 0, 0); // Clear pagination
                 return;
             }
@@ -502,6 +567,8 @@
                 return `
                     <div class="mb-2">
                         <h3 class="text-base font-semibold text-slate-800 font-thai truncate" title="${item.name}">${item.name}</h3>
+                        <p class="font-thai text-xs text-slate-500"><strong>สาขา:</strong> ${item.branchId}</p> <!-- NEW -->
+                        <p class="font-thai text-xs text-slate-500"><strong>สิทธิการรักษา:</strong> ${item.treatmentPrivilege}</p>
                         <p class="text-xs text-slate-500 font-thai">📅 ${item.date} @ ${item.time}</p>
                     </div>
                     <div class="text-xs text-slate-600 space-y-0.5 mb-3 font-thai">
@@ -517,6 +584,7 @@
             } else if (type === 'row') {
                 return `
                     <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 font-thai">${item.name}</td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 font-thai">${item.branchId}</td> <!-- NEW -->
                     <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 font-thai">${item.date} ${item.time}</td>
                     <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 font-thai">${item.service}</td>
                     <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 font-thai">${item.phonenumber}</td>
