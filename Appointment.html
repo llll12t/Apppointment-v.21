@@ -247,7 +247,8 @@
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-thai">ชื่อ</th>
-                                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-thai">สาขา</th> <!-- NEW -->
+                                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-thai">สาขา</th>
+                                        <!-- NEW -->
                                         <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-thai">วันที่/เวลา</th>
                                         <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-thai">บริการ</th>
                                         <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider font-thai">เบอร์โทร</th>
@@ -390,28 +391,31 @@
                     // แปลงเวลา ISO string ให้เหลือแค่ HH:mm
                     let timeStr = d.time;
                     try {
-                    timeStr = new Date(d.time)
-                        .toLocaleTimeString('th-TH',{ hour:'2-digit', minute:'2-digit' });
-                    } catch(e) { /* ถ้าแปลงไม่สำเร็จ ก็ใช้ raw string */ }
+                        timeStr = new Date(d.time)
+                            .toLocaleTimeString('th-TH', {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            });
+                    } catch (e) { /* ถ้าแปลงไม่สำเร็จ ก็ใช้ raw string */ }
 
                     // แปลงวันที่ dd-mm-yyyy -> Date object สำหรับ sort
-                    const [dd,mm,yyyy] = d.date.split('-');
-                    const parsedDate   = new Date(`${yyyy}-${mm}-${dd}T${timeStr}`);
+                    const [dd, mm, yyyy] = d.date.split('-');
+                    const parsedDate = new Date(`${yyyy}-${mm}-${dd}T${timeStr}`);
 
                     return {
-                        idKey:              d.idKey,
-                        branchId:           d.branchId, // Make sure branchId is included
-                        userlineid:         d.userlineid,
-                        name:               d.name,
-                        phonenumber:        d.phonenumber,
+                        idKey: d.idKey,
+                        branchId: d.branchId, // Make sure branchId is included
+                        userlineid: d.userlineid,
+                        name: d.name,
+                        phonenumber: d.phonenumber,
                         treatmentPrivilege: d.treatmentPrivilege,
-                        note:               d.note,
-                        service:            d.service,
-                        price:              d.price,
-                        date:               d.date,
-                        time:               timeStr,
-                        status:             d.status,
-                        timestamp:          d.timestamp,
+                        note: d.note,
+                        service: d.service,
+                        price: d.price,
+                        date: d.date,
+                        time: timeStr,
+                        status: d.status,
+                        timestamp: d.timestamp,
                         parsedDate
                     };
                 });
@@ -428,10 +432,10 @@
         // NEW FUNCTION: Populates the branch filter dropdown
         function populateBranchFilter(data) {
             const uniqueBranches = [...new Set(data.map(item => item.branchId))].sort();
-            
+
             // Clear existing options, then add default "ทุกสาขา"
-            branchFilterSelect.innerHTML = '<option value="">ทุกสาขา</option>'; 
-            
+            branchFilterSelect.innerHTML = '<option value="">ทุกสาขา</option>';
+
             // Add unique branches to the dropdown
             uniqueBranches.forEach(branch => {
                 if (branch) { // Ensure branchId is not empty or null
@@ -460,7 +464,7 @@
             if (selectedBranch) {
                 filtered = filtered.filter(d => d.branchId === selectedBranch);
             }
-            
+
             const sortOrder = dateSortSelect.value;
             filtered.sort((a, b) => sortOrder === 'latest' ? b.parsedDate - a.parsedDate : a.parsedDate - b.parsedDate);
             return filtered;
