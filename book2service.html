@@ -407,9 +407,25 @@
     <header class="bg-[#2f1a87]">
       <!-- Content inside Header is still limited width and centered -->
       <div class="flex justify-between mx-auto max-w-md p-8">
-        <div>
-          <p id="greetingPrefix" class="text-white">สวัสดีตอนเช้า</p>
-          <h1 id="greetingName" class="text-white font-bold text-lg"> LINE NAME </h1>
+        <div class="flex">
+          <div class="p-2">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40" height="40" color="#FFFFFF"
+              fill="none">
+              <path d="M16 2V6M8 2V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path
+                d="M13 4H11C7.22876 4 5.34315 4 4.17157 5.17157C3 6.34315 3 8.22876 3 12V14C3 17.7712 3 19.6569 4.17157 20.8284C5.34315 22 7.22876 22 11 22H13C16.7712 22 18.6569 22 19.8284 20.8284C21 19.6569 21 17.7712 21 14V12C21 8.22876 21 6.34315 19.8284 5.17157C18.6569 4 16.7712 4 13 4Z"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M3 10H21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path d="M11.9955 14H12.0045M11.9955 18H12.0045M15.991 14H16M8 14H8.00897M8 18H8.00897"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </div>
+          <div>
+            <p id="greetingPrefix" class="text-[#bdadff]">สวัสดีตอนเช้า</p>
+            <h1 id="greetingName" class="text-white font-bold text-lg"> LINE NAME </h1>
+          </div>
         </div>
         <img id="greetingAvatar" src="" alt="Avatar"
           class="w-12 h-12 rounded-full object-cover border-2 border-white mr-4" />
@@ -550,9 +566,9 @@
       </form>
     </div>
   </div>
-  
-  <script src="Dashboard/config.js"></script>
+    <script src="Dashboard/config.js"></script>
   <script>
+    const LIFF_ID = '2007432636-DpowZgEb'; // Booking
     const ENABLE_LIFF = true; // ตั้งค่าเป็น false ถ้าจะทดสอบใน Browser ปกติโดยไม่ผ่าน LIFF
       const COLORS = {
       primary: '#121625',
