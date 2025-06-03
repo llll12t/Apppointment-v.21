@@ -31,8 +31,9 @@
     </form>
   </div>
   <!-- Assume Config.js defines WEB_APP_URL -->
-  <script src="Config.js"></script>
   <script>
+const CONFIG_URL = 'https://script.google.com/macros/s/AKfycbyCtMYBDIPQOOi4GGn2MuK2oL0Vbwg_o6MEa3IzpcXdkdyZbqlyCa0rUm4tsNcQvMIG/exec';
+
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       document.getElementById('errorMsg').style.display = 'none';
