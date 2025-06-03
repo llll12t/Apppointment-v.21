@@ -465,7 +465,7 @@
         async function fetchInitialData() {
             showLoading();
             try {
-                const res = await fetch(`${CONFIG_URL}?action=fetchBookings`);
+                const res = await fetch(`${WEB_APP_URL}?action=fetchBookings`);
                 const text = await res.text();
                 const data = JSON.parse(text);
                 allAppointmentsData = (Array.isArray(data) ? data : []).map(d => {
@@ -761,7 +761,7 @@
         function confirmAction(message, action, id, branchId) {
             showAlert(message, () => {
                 showLoading();
-                let url = `${CONFIG_URL}?action=${action}&id=${encodeURIComponent(id)}`;
+                let url = `${WEB_APP_URL}?action=${action}&id=${encodeURIComponent(id)}`;
                 if (branchId) {
                     url += `&branchId=${encodeURIComponent(branchId)}`;
                 }
