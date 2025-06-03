@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>แอดมิน - จัดการนัดหมาย</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Noto Sans Thai', sans-serif;
+    }
+    select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%234A5568' stroke-width='1.5'%3E%3Cpath d='M7 10l5 5 5-5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 1.25em 1.25em;
+      padding-right: 2.5rem;
+    }
+    .spinner {
+      width: 3rem;
+      height: 3rem;
+      border: .5rem solid #eee;
+      border-top: .5rem solid #4f46e5;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body class="bg-gradient-to-b from-purple-100 via-orange-100 to-white min-h-screen relative bg-fixed">
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay"
+    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-50">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Custom Confirm Overlay -->
+  <div id="customAlertOverlay"
+    class="fixed inset-0 invisible items-center justify-center bg-black bg-opacity-50 z-50">
+    <div class="bg-white p-6 rounded shadow-lg text-center w-80">
+      <p id="customAlertMessage" class="mb-6 text-gray-700 text-sm"></p>
+      <div id="customAlertButtons" class="flex justify-center gap-4">
+        <button id="customAlertCancel" class="bg-gray-300 text-gray-800 px-4 py-2 rounded">ยกเลิก</button>
+        <button id="customAlertOk" class="bg-indigo-600 text-white px-4 py-2 rounded">ตกลง</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="max-w-md mx-auto p-4">
+    <h1 class="text-xl font-bold mb-4">หน้าจัดการนัดหมาย (Admin)</h1>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
+      <select id="branchFilter" class="bg-white p-2 border rounded-lg">
+        <option value="">ทุกสาขา</option>
+      </select>
+      <select id="statusFilter" class="bg-white p-2 border rounded-lg">
+        <option value="">ทั้งหมด</option>
+        <option value="รอการยืนยัน">รอการยืนยัน</option>
+        <option value="ยืนยันแล้ว">ยืนยันแล้ว</option>
+        <option value="ยกเลิก">ยกเลิก</option>
+        <option value="เสร็จสิ้น">เสร็จสิ้น</option>
+      </select>
+      <select id="dateSort" class="bg-white p-2 border rounded-lg">
+        <option value="latest">วันที่ล่าสุด</option>
+        <option value="oldest">วันที่เก่าสุด</option>
+      </select>
+    </div>
+
+    <table class="w-full bg-white rounded-lg shadow text-sm">
+      <thead>
+        <tr>
+          <th class="bg-[#2F1A87] text-white p-2 text-left rounded-tl-lg" scope="col">ชื่อ</th>
+          <th class="bg-[#2F1A87] text-white p-2 text-left" scope="col">สาขา</th>
+          <th class="bg-[#2F1A87] text-white p-2 text-left" scope="col">วันที่</th>
+          <th class="bg-[#2F1A87] text-white p-2 text-center" scope="col">สถานะ</th>
+          <th class="bg-[#2F1A87] text-white p-2 text-center rounded-tr-lg" scope="col">ดู</th>
+        </tr>
+      </thead>
+      <tbody id="dataBody"></tbody>
+    </table>
+
+    <div id="pagination"
+      class="flex justify-center items-center space-x-1 mt-4 text-sm"></div>
+  </main>
+   <script src="Dashboard/Config.js"></script>
+  <script>
+    const rowsPerPage = 15;
+    let filteredData = [];
+    let currentPage = 1;
+    let totalPages = 1;
+
+    const showLoading = () => document.getElementById('loadingOverlay').classList.remove('hidden');
+    const hideLoading = () => document.getElementById('loadingOverlay').classList.add('hidden');
+
+    const overlay = document.getElementById('customAlertOverlay');
+    const alertMessage = document.getElementById('customAlertMessage');
+    const btnOk = document.getElementById('customAlertOk');
+    const btnCancel = document.getElementById('customAlertCancel');
+
+    const branchFilter = document.getElementById('branchFilter');
+
+    function confirmAction(message, action, id, branchId) {
+      alertMessage.textContent = message;
+      overlay.classList.replace('invisible', 'flex');
+
+      btnOk.textContent = 'ตกลง';
+      btnCancel.textContent = 'ยกเลิก';
+      btnOk.style.display = btnCancel.style.display = 'inline-block';
+
+      btnCancel.onclick = () => {
+        overlay.classList.replace('flex', 'invisible');
+      };
+
+      btnOk.onclick = () => {
+        btnOk.style.display = btnCancel.style.display = 'none';
+        alertMessage.textContent = 'กำลังส่งแจ้งเตือน…';
+        showLoading();
+
+        let url = `${DETAILS_SCRIPT_URL}?action=${action}&id=${encodeURIComponent(id)}`;
+        if (branchId) {
+          url += `&branchId=${encodeURIComponent(branchId)}`;
+        }
+
+        fetch(url, {
+          method: 'POST'
+        })
+          .then(res => {
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return res.text();
+          })
+          .then(() => {
+            alertMessage.textContent = 'แจ้งเตือนสำเร็จ';
+            btnOk.textContent = 'ปิด';
+            btnOk.style.display = 'inline-block';
+            hideLoading();
+            btnOk.onclick = () => {
+              overlay.classList.replace('flex', 'invisible');
+              loadData();
+            };
+          })
+          .catch(err => {
+            console.error(err);
+            hideLoading();
+            alertMessage.textContent = 'เกิดข้อผิดพลาด ลองใหม่อีกครั้ง';
+            btnOk.textContent = 'ลองใหม่';
+            btnCancel.textContent = 'ยกเลิก';
+            btnOk.style.display = btnCancel.style.display = 'inline-block';
+            btnOk.onclick = () => confirmAction(message, action, id, branchId);
+            btnCancel.onclick = () => overlay.classList.replace('flex', 'invisible');
+          });
+      };
+    }
+
+    async function loadData() {
+      showLoading();
+      try {
+        const res = await fetch(`${DETAILS_SCRIPT_URL}?action=fetchBookings`);
+        const data = await res.json();
+
+        const mappedData = data.map(d => ({
+          ...d,
+          branchId: d.branchId || 'ไม่ระบุ',
+          parsedDate: new Date(d.date.split('-').reverse().join('-'))
+        }));
+
+        populateBranchFilter(mappedData);
+
+        const sorted = mappedData.sort((a, b) =>
+          document.getElementById('dateSort').value === 'latest' ?
+            b.parsedDate - a.parsedDate :
+            a.parsedDate - b.parsedDate
+        );
+
+        const status = document.getElementById('statusFilter').value.toLowerCase();
+        const selectedBranch = branchFilter.value;
+
+        filteredData = sorted.filter(d =>
+          (!status || d.status.toLowerCase().includes(status)) &&
+          (!selectedBranch || d.branchId === selectedBranch)
+        );
+
+        currentPage = 1;
+        totalPages = Math.ceil(filteredData.length / rowsPerPage) || 1;
+        renderPagination();
+        renderPage();
+      } catch (err) {
+        console.error(err);
+        alertMessage.textContent = 'โหลดข้อมูลล้มเหลว ต้องการลองใหม่หรือไม่?';
+        overlay.classList.replace('invisible', 'flex');
+        btnOk.textContent = 'ลองใหม่';
+        btnCancel.style.display = 'inline-block';
+        btnCancel.onclick = () => overlay.classList.replace('flex', 'invisible');
+        btnOk.onclick = () => { overlay.classList.replace('flex', 'invisible'); loadData(); };
+      } finally {
+        hideLoading();
+      }
+    }
+
+    function populateBranchFilter(data) {
+      const uniqueBranches = [...new Set(data.map(item => item.branchId))].sort();
+      const currentSelectedBranch = branchFilter.value;
+      branchFilter.innerHTML = '<option value="">ทุกสาขา</option>';
+      uniqueBranches.forEach(branch => {
+        if (branch && branch !== 'ไม่ระบุ') {
+          const option = document.createElement('option');
+          option.value = branch;
+          option.textContent = branch;
+          branchFilter.appendChild(option);
+        }
+      });
+      if ([...uniqueBranches, ''].includes(currentSelectedBranch)) {
+        branchFilter.value = currentSelectedBranch;
+      } else {
+        branchFilter.value = '';
+      }
+    }
+
+    function renderPage() {
+      const start = (currentPage - 1) * rowsPerPage;
+      const pageData = filteredData.slice(start, start + rowsPerPage);
+      renderTableBody(pageData);
+      highlightCurrentPage();
+    }
+
+    function renderTableBody(data) {
+      const tbody = document.getElementById('dataBody');
+      tbody.innerHTML = '';
+
+      if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center p-4 text-gray-500">ไม่พบข้อมูล</td></tr>';
+        return;
+      }
+
+      data.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="p-2 border-b">${item.name}</td>
+          <td class="p-2 border-b">${item.branchId}</td>
+          <td class="p-2 border-b">${item.date}</td>
+          <td class="p-2 border-b text-center">${item.status}</td>
+          <td class="p-2 border-b text-center">
+            <button class="toggleDetail bg-[#2F1A87] text-white px-2 py-1 rounded">ดู</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+
+        const detailRow = document.createElement('tr');
+        detailRow.classList.add('hidden');
+        detailRow.innerHTML = `
+          <td colspan="5" class="bg-gray-50 p-4 text-sm">
+            <p><strong>ชื่อ:</strong> ${item.name}</p>
+            <p><strong>เบอร์โทร:</strong> ${item.phonenumber}</p>
+            <p><strong>สาขา:</strong> ${item.branchId}</p>
+            <p><strong>บริการ:</strong> ${item.service}</p>
+            <p><strong>ราคา:</strong> ${item.price}</p>
+            <p><strong>วันที่:</strong> ${item.date}</p>
+            <p><strong>เวลา:</strong> ${item.time}</p>
+            <p><strong>หมายเหตุ:</strong> ${item.note || '-'}</p>
+            <p><strong>สถานะ:</strong> ${item.status}</p>
+            <div class="mt-4 flex flex-wrap gap-2">
+              <button class="actionBtn bg-yellow-500 text-white px-3 py-1 rounded" data-action="sendReminder" data-id="${item.idKey}" data-branch-id="${item.branchId}">🔔 แจ้งเตือน</button>
+              <button class="actionBtn bg-purple-600 text-white px-3 py-1 rounded" data-action="sendReminderWithPayment" data-id="${item.idKey}" data-branch-id="${item.branchId}">🔔 แจ้งชำระ</button>
+              <button class="actionBtn bg-gray-600 text-white px-3 py-1 rounded" data-action="sendReminderWithoutPayment" data-id="${item.idKey}" data-branch-id="${item.branchId}">🔔 ฟรี</button>
+              <button class="actionBtn bg-green-500 text-white px-3 py-1 rounded" data-action="confirmBooking" data-id="${item.idKey}" data-branch-id="${item.branchId}" ${item.status !== 'รอการยืนยัน' ? 'disabled style="opacity:.5"' : ''}>ยืนยัน</button>
+              <button class="actionBtn bg-red-500 text-white px-3 py-1 rounded" data-action="cancelBooking" data-id="${item.idKey}" data-branch-id="${item.branchId}" ${['ยกเลิก', 'เสร็จสิ้น'].includes(item.status) ? 'disabled style="opacity:.5"' : ''}>ยกเลิก</button>
+              <button class="actionBtn bg-blue-500 text-white px-3 py-1 rounded" data-action="completeBooking" data-id="${item.idKey}" data-branch-id="${item.branchId}" ${['ยกเลิก', 'เสร็จสิ้น'].includes(item.status) ? 'disabled style="opacity:.5"' : ''}>เสร็จสิ้น</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(detailRow);
+
+        row.querySelector('.toggleDetail').onclick = () => {
+          detailRow.classList.toggle('hidden');
+        };
+      });
+
+      document.querySelectorAll('.actionBtn').forEach(btn => {
+        btn.onclick = () => {
+          const action = btn.dataset.action;
+          const id = btn.dataset.id;
+          const branchId = btn.dataset.branchId;
+          confirmAction(`คุณต้องการดำเนินการ "${action}" หรือไม่?`, action, id, branchId);
+        };
+      });
+    }
+
+    function renderPagination() {
+      const container = document.getElementById('pagination');
+      container.innerHTML = '';
+
+      const btnFirst = document.createElement('button');
+      btnFirst.textContent = 'หน้าสุด';
+      btnFirst.className = 'px-3 py-1 border rounded text-gray-700';
+      btnFirst.onclick = () => { currentPage = 1; renderPage(); };
+      btnFirst.disabled = currentPage === 1;
+      if (currentPage === 1) btnFirst.classList.add('opacity-50', 'cursor-not-allowed');
+      container.appendChild(btnFirst);
+
+      for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        btn.dataset.page = i;
+        btn.className = 'px-3 py-1 border rounded text-gray-700';
+        btn.onclick = () => { currentPage = i; renderPage(); };
+        btn.disabled = i === currentPage;
+        container.appendChild(btn);
+      }
+
+      const btnLast = document.createElement('button');
+      btnLast.textContent = 'หลังสุด';
+      btnLast.className = 'px-3 py-1 border rounded text-gray-700';
+      btnLast.onclick = () => { currentPage = totalPages; renderPage(); };
+      btnLast.disabled = currentPage === totalPages;
+      if (currentPage === totalPages) btnLast.classList.add('opacity-50', 'cursor-not-allowed');
+      container.appendChild(btnLast);
+    }
+
+    function highlightCurrentPage() {
+      document.querySelectorAll('#pagination button').forEach(btn => {
+        btn.classList.remove('bg-indigo-600', 'text-white');
+        if (!btn.disabled) {
+          btn.classList.add('text-gray-700');
+        }
+        if (+btn.dataset.page === currentPage) {
+          btn.classList.remove('text-gray-700');
+          btn.classList.add('bg-indigo-600', 'text-white');
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      ['statusFilter', 'dateSort', 'branchFilter'].forEach(id => {
+        document.getElementById(id).addEventListener('change', loadData);
+      });
+      loadData();
+    });
+  </script>
+</body>
+
+</html>
