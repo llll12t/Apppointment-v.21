@@ -58,7 +58,7 @@
           localStorage.setItem('isAdminLoggedIn', 'true');
           localStorage.setItem('adminName', data.displayName); // เปลี่ยนกุญแจเป็น 'adminName'
           // ไปที่หน้า member.html (Dashboard)
-          window.location.href = 'Appointment.html';
+          window.location.href = 'appointment.html';
         } else {
           document.getElementById('errorMsg').textContent = data.message || 'ล็อกอินไม่สำเร็จ';
           document.getElementById('errorMsg').style.display = 'block';
