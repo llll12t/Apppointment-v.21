@@ -1,24 +1,19 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>จัดการนัดหมาย (เฉพาะของผู้ใช้)</title>
+  <title>จัดการนัดหมาย (เฉพาะของผู้ใช้) — แก้ไขการเรียงวันที่</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;700&display=swap"
     rel="stylesheet" />
   <style>
-    body {
-      font-family: 'Noto Sans Thai', sans-serif;
-    }
-
-    select {
-      -webkit-appearance: none;
-      -moz-appearance: none;
+    body { font-family: 'Noto Sans Thai', sans-serif; }
+    select { 
+      -webkit-appearance: none; 
+      -moz-appearance: none; 
       appearance: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%234A5568' stroke-width='1.5'%3E%3Cpath d='M7 10l5 5 5-5'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
@@ -26,29 +21,18 @@
       background-size: 1.25em 1.25em;
       padding-right: 2.5rem;
     }
-
     .spinner {
-      width: 3rem;
-      height: 3rem;
+      width: 3rem; height: 3rem;
       border: .5rem solid #eee;
       border-top: .5rem solid #4f46e5;
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    .hidden {
-      display: none;
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .hidden { display: none; }
   </style>
 </head>
-
-<body class="bg-gradient-to-b from-purple-100 via-orange-100 to-white min-h-screen relative bg-fixed">
+<body class="bg-gradient-to-b from-purple-100 via-orange-100 to-white min-h-screen relative">
 
   <!-- Loading Overlay -->
   <div id="loadingOverlay" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-50">
@@ -59,7 +43,7 @@
   <div id="customAlertOverlay" class="fixed inset-0 invisible items-center justify-center bg-black bg-opacity-50 z-50">
     <div class="bg-white p-6 rounded shadow-lg text-center w-80">
       <p id="customAlertMessage" class="mb-6 text-gray-700 text-sm"></p>
-      <div id="customAlertButtons" class="flex justify-center gap-4">
+      <div class="flex justify-center gap-4">
         <button id="customAlertCancel" class="bg-gray-300 text-gray-800 px-4 py-2 rounded">ยกเลิก</button>
         <button id="customAlertOk" class="bg-indigo-600 text-white px-4 py-2 rounded">ตกลง</button>
       </div>
@@ -99,30 +83,34 @@
         </tr>
       </thead>
       <tbody id="dataBody">
-        <!-- ข้อมูลจะถูกเติมที่นี่ -->
+        <!-- จะเติมข้อมูลที่นี่ -->
       </tbody>
     </table>
 
     <!-- Pagination Controls -->
     <div id="pagination" class="flex justify-center items-center space-x-1 mt-4 text-sm"></div>
 
-    <!-- เก็บค่า User ID ของ LIFF -->
     <input type="hidden" id="useridlineFilter" />
   </main>
 
-<!--   <script src="Config.js"></script> -->
   <script>
     const DETAILS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwRDs7takd9ozlconIGh3kVaBBzjMKP1Il_cOSVZ_RMkJNigputZPMFvA3GYtSi1QOCDA/exec';
-    const LIFF_ID_HIS = '2007432636-g5YyoKjr';
+    const LIFF_ID_HIS = '2007432636-g5YyoKjr'; // ตัวอย่าง LIFF ID ของคุณ
 
     const rowsPerPage = 10;
     let currentData = [];
     let currentPage = 1;
 
+    // ฟังก์ชันช่วยแปลง "dd-mm-yyyy" → Date
+    function parseDateThai(dateStr) {
+      const [dd, mm, yyyy] = dateStr.split('-');
+      return new Date(`${yyyy}-${mm}-${dd}`);
+    }
+
     const showLoading = () => document.getElementById('loadingOverlay').classList.remove('hidden');
     const hideLoading = () => document.getElementById('loadingOverlay').classList.add('hidden');
 
-    // ฟังก์ชันแสดง dialog ยืนยัน
+    // ฟังก์ชันแสดง confirm overlay
     function confirmAction(message, action, id, branchId) {
       const overlay = document.getElementById('customAlertOverlay');
       const alertMessage = document.getElementById('customAlertMessage');
@@ -146,9 +134,7 @@
         showLoading();
 
         let url = `${DETAILS_SCRIPT_URL}?action=${action}&id=${encodeURIComponent(id)}`;
-        if (branchId) {
-          url += `&branchId=${encodeURIComponent(branchId)}`;
-        }
+        if (branchId) url += `&branchId=${encodeURIComponent(branchId)}`;
 
         fetch(url, { method: 'POST' })
           .then(res => {
@@ -178,7 +164,7 @@
       };
     }
 
-    // เมื่อโหลดหน้า ให้ทำ LIFF init และดึง profile
+    // เมื่อ DOM โหลดเสร็จ ให้เริ่ม LIFF init → ดึง Profile → bind ตัวกรอง → loadData()
     document.addEventListener('DOMContentLoaded', async () => {
       try {
         await liff.init({ liffId: LIFF_ID_HIS });
@@ -189,7 +175,6 @@
         const profile = await liff.getProfile();
         document.getElementById('useridlineFilter').value = profile.userId;
 
-        // ผูก event ให้ตัวกรองทั้งสามตัว เมื่อมีการเปลี่ยนค่า ให้โหลดข้อมูลใหม่
         ['branchFilter', 'statusFilter', 'dateSort'].forEach(id => {
           document.getElementById(id).addEventListener('change', loadData);
         });
@@ -197,17 +182,14 @@
         loadData();
       } catch (err) {
         console.error('LIFF Error:', err);
-        // ถ้า LIFF ผิดพลาด แสดง alert อย่างง่าย
         alert('พบข้อผิดพลาดในการโหลด LIFF: ' + err.message);
       }
     });
 
-    // ฟังก์ชันหลัก: ดึงข้อมูลจาก GAS แล้วกรองตาม user, สาขา, สถานะ, แล้วจัดเรียงและแบ่งหน้า
+    // ฟังก์ชันหลัก: ดึง data → กรองเฉพาะ user → สร้างตัวเลือกสาขา → sort & filter → แสดงหน้าแรก
     async function loadData() {
       const tbody = document.getElementById('dataBody');
       const paginationEl = document.getElementById('pagination');
-
-      // แสดงข้อความ "กำลังโหลด" ชั่วคราว
       tbody.innerHTML = '<tr><td colspan="5" class="text-center p-4 text-gray-500">กำลังโหลดข้อมูล...</td></tr>';
       paginationEl.innerHTML = '';
 
@@ -216,29 +198,23 @@
         const allData = await res.json();
         const uid = document.getElementById('useridlineFilter').value;
 
-        // กรองเฉพาะรายการที่ user นี้เป็นเจ้าของ (userlineid)
-        const ownData = allData.filter(d => d.userlineid === uid)
-          .map(d => ({
-            ...d,
-            // แปลงวันที่จาก "dd-mm-yyyy" เป็น Date object
-            parsedDate: new Date(d.date.split('-').reverse().join('-'))
-          }));
+        // กรองเฉพาะรายการของ user คนนี้
+        const filtered = allData.filter(d => d.userlineid === uid);
 
-        // สร้างตัวเลือกสาขา จากข้อมูลของ user คนนี้
-        populateBranchFilter(ownData);
+        // สร้างตัวเลือกสาขา (branch) จากข้อมูลข้างบน
+        populateBranchFilter(filtered);
 
-        // จัดเรียงตามวันที่
-        const sorted = ownData.sort((a, b) =>
-          document.getElementById('dateSort').value === 'latest' ?
-            b.parsedDate - a.parsedDate :
-            a.parsedDate - b.parsedDate
-        );
+        // เรียงวันที่
+        const sorted = filtered.sort((a, b) => {
+          const da = parseDateThai(a.date);
+          const db = parseDateThai(b.date);
+          const dir = document.getElementById('dateSort').value;
+          return dir === 'latest' ? db.getTime() - da.getTime() : da.getTime() - db.getTime();
+        });
 
-        // กรองตามสถานะ
+        // กรองตามสถานะ และสาขา
         const status = document.getElementById('statusFilter').value.toLowerCase();
-        // กรองตามสาขา (branchFilter)
         const selectedBranch = document.getElementById('branchFilter').value;
-
         currentData = sorted.filter(d =>
           (!status || d.status.toLowerCase() === status) &&
           (!selectedBranch || d.branchId === selectedBranch)
@@ -248,25 +224,25 @@
         displayPage(currentPage);
       } catch (err) {
         console.error(err);
-        alert('โหลดข้อมูลล้มเหลว');
         tbody.innerHTML = '<tr><td colspan="5" class="text-center p-4 text-red-500">ไม่สามารถโหลดข้อมูลได้</td></tr>';
       }
     }
 
-    // สร้างตัวเลือกสาขาจากข้อมูลที่มีของ user คนนี้
+    // สร้าง <option> ของสาขา (branch) จากข้อมูลที่ผ่านการกรอง user แล้ว
     function populateBranchFilter(data) {
       const branchFilter = document.getElementById('branchFilter');
-      const uniqueBranches = [...new Set(data.map(item => item.branchId || 'ไม่ระบุ'))].filter(b => b !== 'ไม่ระบุ').sort();
+      const uniqueBranches = [...new Set(data.map(item => item.branchId || 'ไม่ระบุ'))]
+                                .filter(b => b !== 'ไม่ระบุ')
+                                .sort();
       const currentSelected = branchFilter.value;
-
       branchFilter.innerHTML = '<option value="">ทุกสาขา</option>';
       uniqueBranches.forEach(branch => {
-        const option = document.createElement('option');
-        option.value = branch;
-        option.textContent = branch;
-        branchFilter.appendChild(option);
+        const opt = document.createElement('option');
+        opt.value = branch;
+        opt.textContent = branch;
+        branchFilter.appendChild(opt);
       });
-      // หากค่าที่เลือกก่อนหน้านี้ยังมีอยู่ ให้เลือกไว้ต่อ
+      // ถ้าค่าเดิมยังอยู่ ให้อยู่ต่อ
       if (uniqueBranches.includes(currentSelected)) {
         branchFilter.value = currentSelected;
       } else {
@@ -274,7 +250,7 @@
       }
     }
 
-    // ฟังก์ชันแบ่งหน้าและแสดงผลในตาราง
+    // แสดงข้อมูลในตารางตามหน้า (page) ที่กำหนด
     function displayPage(page) {
       const tbody = document.getElementById('dataBody');
       tbody.innerHTML = '';
@@ -300,7 +276,7 @@
           `;
           tbody.appendChild(row);
 
-          // แถวรายละเอียด (ซ่อนอยู่ก่อน)
+          // แถวรายละเอียด (ซ่อน)
           const detailRow = document.createElement('tr');
           detailRow.classList.add('hidden');
           detailRow.innerHTML = `
@@ -314,24 +290,20 @@
               <p><strong>หมายเหตุ:</strong> ${item.note || '-'}</p>
               <p><strong>สถานะ:</strong> ${item.status}</p>
               <div class="mt-4 flex flex-wrap gap-2">
-                <button class="actionBtn bg-yellow-500 text-white px-3 py-1 rounded" data-action="sendReminder" data-id="${item.idKey}" data-branch-id="${item.branchId}">🔔 แจ้งเตือน</button>
-                <button class="actionBtn bg-purple-600 text-white px-3 py-1 rounded" data-action="sendReminderWithPayment" data-id="${item.idKey}" data-branch-id="${item.branchId}">🔔 แจ้งชำระ</button>
-                <button class="actionBtn bg-gray-600 text-white px-3 py-1 rounded" data-action="sendReminderWithoutPayment" data-id="${item.idKey}" data-branch-id="${item.branchId}">🔔 ฟรี</button>
                 <button class="actionBtn bg-green-500 text-white px-3 py-1 rounded" data-action="confirmBooking" data-id="${item.idKey}" data-branch-id="${item.branchId}" ${item.status !== 'รอการยืนยัน' ? 'disabled style="opacity:.5"' : ''}>ยืนยัน</button>
-                <button class="actionBtn bg-red-500 text-white px-3 py-1 rounded" data-action="cancelBooking" data-id="${item.idKey}" data-branch-id="${item.branchId}" ${['ยกเลิก', 'เสร็จสิ้น'].includes(item.status) ? 'disabled style="opacity:.5"' : ''}>ยกเลิก</button>
-                <button class="actionBtn bg-blue-500 text-white px-3 py-1 rounded" data-action="completeBooking" data-id="${item.idKey}" data-branch-id="${item.branchId}" ${['ยกเลิก', 'เสร็จสิ้น'].includes(item.status) ? 'disabled style="opacity:.5"' : ''}>เสร็จสิ้น</button>
+                <button class="actionBtn bg-red-500 text-white px-3 py-1 rounded" data-action="cancelBooking" data-id="${item.idKey}" data-branch-id="${item.branchId}" ${['ยกเลิก','เสร็จสิ้น'].includes(item.status) ? 'disabled style="opacity:.5"' : ''}>ยกเลิก</button>
               </div>
             </td>
           `;
           tbody.appendChild(detailRow);
 
-          // ผูกเหตุการณ์สลับแถวรายละเอียด
+          // bind toggleDetail
           row.querySelector('.toggleDetail').onclick = () => {
             detailRow.classList.toggle('hidden');
           };
         });
 
-        // ผูกเหตุการณ์ให้ปุ่ม action ต่างๆ
+        // bind action buttons
         document.querySelectorAll('.actionBtn').forEach(btn => {
           btn.onclick = () => {
             const action = btn.dataset.action;
@@ -345,7 +317,7 @@
       renderPagination();
     }
 
-    // สร้างปุ่มแบ่งหน้า
+    // สร้างปุ่มแบ่งหน้า (pagination)
     function renderPagination() {
       const container = document.getElementById('pagination');
       container.innerHTML = '';
@@ -361,7 +333,7 @@
       if (currentPage === 1) btnFirst.classList.add('opacity-50', 'cursor-not-allowed');
       container.appendChild(btnFirst);
 
-      // ปุ่มเลขหน้า (1 ... totalPages)
+      // ปุ่มเลขหน้า
       for (let i = 1; i <= totalPages; i++) {
         const btn = document.createElement('button');
         btn.textContent = i;
@@ -389,5 +361,4 @@
     }
   </script>
 </body>
-
 </html>
