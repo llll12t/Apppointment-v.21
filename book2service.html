@@ -38,7 +38,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(47, 26, 135, 0.5);
+      background: rgba(255, 226, 226, 0.904);
       /* Using direct RGBA or a specific hex from COLORS */
       display: none;
       align-items: center;
@@ -96,7 +96,7 @@
     .popup-content {
       background: #f8f8fb;
       /* bg-card */
-      color: #121625;
+      color: #2f1a87;
       /* text-main */
       padding: 1.5rem;
       border-radius: 0.75rem;
@@ -110,13 +110,13 @@
       font-family: 'Inter', 'Noto Sans Thai', sans-serif;
       margin: 0;
       /* bg-gradient-to-b from-purple-100 via-orange-100 to-white applied via Tailwind */
-      color: #121625;
+      color: #2f1a87;
       /* text-main */
       overscroll-behavior-y: contain;
     }
 
     ::selection {
-      background-color: #121625;
+      background-color: #2f1a87;
       /* primary */
       color: #fff;
     }
@@ -129,7 +129,7 @@
       /* bg-element */
       border: 1px solid #e5e7eb;
       /* border */
-      color: #121625;
+      color: #2f1a87;
       /* text-main */
       border-radius: 0.5rem;
       padding: 0.75rem;
@@ -170,7 +170,7 @@
     }
 
     .flatpickr-day {
-      color: #121625 !important;
+      color: #2f1a87 !important;
       /* text-main */
       background: transparent !important;
       border-radius: 0.375rem;
@@ -194,7 +194,7 @@
     .flatpickr-day.selected,
     .flatpickr-day.startRange,
     .flatpickr-day.endRange {
-      background: #121625 !important;
+      background: #2f1a87 !important;
       /* primary */
       color: #fff !important;
     }
@@ -224,7 +224,7 @@
       border-radius: 0.5rem;
       background: #fdfdfd;
       /* bg-element */
-      color: #121625;
+      color: #2f1a87;
       /* text-main */
       border: 1px solid transparent;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
@@ -239,10 +239,10 @@
     }
 
     .time-option.selected {
-      background: #121625;
+      background: #2f1a87;
       /* primary */
       color: #fff;
-      border-color: #121625;
+      border-color: #2f1a87;
       /* primary */
     }
 
@@ -315,7 +315,7 @@
       /* bg-element (slightly different from form inputs) */
       border: 1px solid #e5e7eb;
       /* border */
-      color: #121625;
+      color: #2f1a87;
       /* text-main */
       transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
       cursor: pointer;
@@ -331,9 +331,9 @@
 
     #branchCards .branch-card.selected,
     #serviceCards .service-card.selected {
-      background: #121625;
+      background: #2f1a87;
       /* primary */
-      border-color: #121625;
+      border-color: #2f1a87;
       /* primary */
       color: #fff;
     }
@@ -353,20 +353,20 @@
     }
 
     .btn-primary {
-      background: #121625;
+      background: #2f1a87;
       /* primary */
       color: #fff;
     }
 
     .btn-primary:hover {
-      background: #2f1a87;
+      background: #1a0e47;
       /* primary-light */
     }
 
     .btn-secondary {
       background: #fdfdfd;
       /* bg-element */
-      color: #121625;
+      color: #2f1a87;
       /* text-main */
       border: 1px solid #e5e7eb;
       /* border */
@@ -439,7 +439,7 @@
       <form id="bookingForm" novalidate class="flex flex-col flex-1 relative">
         <!-- Step 0: เลือกสาขา -->
         <div class="step" id="step0">
-          <label class="block mb-3 text-lg text-center text-[#121625] font-semibold">
+          <label class="block mb-3 text-lg text-center text-[#2f1a87] font-semibold">
             เลือกสาขา
           </label>
           <div id="branchCards" class="grid grid-cols-1 gap-4 mb-6"></div>
@@ -450,7 +450,7 @@
 
         <!-- Step 1: เลือกบริการ -->
         <div class="step hidden" id="step1">
-          <label class="block mb-3 text-lg text-center text-[#121625] font-semibold">
+          <label class="block mb-3 text-lg text-center text-[#2f1a87] font-semibold">
             เลือกบริการ
           </label>
           <div id="serviceCards" class="grid grid-cols-2 gap-4 mb-6"></div>
@@ -466,13 +466,13 @@
 
         <!-- Step 2: เลือกวันที่ / เวลา -->
         <div class="step hidden" id="step2">
-          <label class="block mb-1 text-center text-[#121625] font-semibold">
+          <label class="block mb-1 text-center text-[#2f1a87] font-semibold">
             เลือกวันที่
           </label>
           <div id="inlineCalendar-wrapper" class="mb-4">
             <div id="inlineCalendar"></div>
           </div>
-          <label class="block mb-2 text-center text-[#121625] font-semibold">
+          <label class="block mb-2 text-center text-[#2f1a87] font-semibold">
             เลือกเวลา
           </label>
           <div id="timeDropdown" class="mb-6 min-h-[50px]">
@@ -492,14 +492,14 @@
 
         <!-- Step 3: กรอกข้อมูลส่วนตัว -->
         <div class="step hidden" id="step3">
-          <label class="block mb-3 text-lg text-center text-[#121625] font-semibold">
+          <label class="block mb-3 text-lg text-center text-[#2f1a87] font-semibold">
             ข้อมูลติดต่อ
           </label>
-          <input type="text" id="name" name="name" placeholder="ชื่อ-สกุล" required />
-          <input type="tel" id="phonenumber" name="phonenumber" placeholder="เบอร์ติดต่อ" required />
+          <input type="text" id="name" name="name" placeholder="ชื่อ-สกุล" class="p-2 mb-3" required />
+          <input type="tel" id="phonenumber" name="phonenumber" class="p-2 mb-3" placeholder="เบอร์ติดต่อ" required />
 
           <!-- Added: Treatment Privilege -->
-          <select id="treatmentPrivilege" name="treatmentPrivilege" class="mb-3" required>
+          <select id="treatmentPrivilege" name="treatmentPrivilege" class="mb-3 p-2" required>
             <option value="">เลือกสิทธิการรักษา</option>
             <option value="ทั่วไป">ทั่วไป</option>
             <option value="บัตรทอง">บัตรทอง</option>
@@ -518,7 +518,7 @@
 
         <!-- Step 4: ตรวจสอบข้อมูล -->
         <div class="step hidden" id="step4">
-          <label class="block mb-3 text-lg text-center text-[#121625] font-semibold">
+          <label class="block mb-3 text-lg text-center text-[#2f1a87] font-semibold">
             ตรวจสอบข้อมูล
           </label>
           <div class="bg-[#f8f8fb] p-4 rounded-lg mb-6 space-y-3">
@@ -566,18 +566,18 @@
       </form>
     </div>
   </div>
-    <script src="Dashboard/config.js"></script>
+ <script src="Dashboard/config.js"></script> 
   <script>
     const LIFF_ID = '2007432636-DpowZgEb'; // Booking
     const ENABLE_LIFF = true; // ตั้งค่าเป็น false ถ้าจะทดสอบใน Browser ปกติโดยไม่ผ่าน LIFF
       const COLORS = {
-      primary: '#121625',
-      primaryLight: '#2f1a87', // Adjusted to match original primary-light for hover effects
+      primary: '#2f1a87',
+      primaryLight: '#2f1a87', 
       bg: '#fdfdfd',
       bgCard: '#f8f8fb',
       bgElement: '#fdfdfd',
-      textMain: '#121625',
-      textMain2: '#2f1a87', // Used for service dots in Flex message (matching primary-light)
+      textMain: '#2f1a87',
+      textMain2: '#a089ff', 
       textPlaceholder: '#9ca3af',
       textError: '#f87171',
       borderColor: '#e5e7eb',
@@ -734,7 +734,7 @@
           c.className = `branch-card p-4 rounded-lg cursor-pointer shadow-sm`;
           c.dataset.id = b.id;
           c.dataset.name = b.name;
-          c.innerHTML = `<div class="font-bold text-md mb-1 text-[${COLORS.textMain}]">${b.name}</div>`;
+          c.innerHTML = `<div class="font-bold text-md mb-1 text-[${COLORS.textMain2}]">${b.name}</div>`;
           c.onclick = () => {
             [...container.children].forEach(child => child.classList.remove('selected'));
             c.classList.add('selected');
@@ -790,7 +790,7 @@
           c.dataset.name = s.name;
           c.dataset.price = s.price;
           c.innerHTML = `
-                        <div class="font-bold text-md mb-1 text-[${COLORS.primaryLight}]">${s.name}</div>
+                        <div class="font-bold text-md mb-1 text-[${COLORS.textMain2}]">${s.name}</div>
                         <div class="text-sm text-[${COLORS.textPlaceholder}]">ราคา: ${s.price} บาท</div>
                     `;
           c.onclick = () => {
