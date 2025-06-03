@@ -2,544 +2,389 @@
 <html lang="th">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>จัดการบริการ - Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;700&display=swap"
-        rel="stylesheet" />
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>จัดการนัดหมาย (เฉพาะของผู้ใช้)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Thai:wght@400;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Noto Sans Thai', sans-serif;
+    }
 
-        .font-thai {
-            font-family: 'Noto Sans Thai', sans-serif;
-        }
+    select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%234A5568' stroke-width='1.5'%3E%3Cpath d='M7 10l5 5 5-5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 1.25em 1.25em;
+      padding-right: 2.5rem;
+    }
 
-        .table-scroll-container::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
+    .spinner {
+      width: 3rem;
+      height: 3rem;
+      border: .5rem solid #eee;
+      border-top: .5rem solid #4f46e5;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
 
-        .table-scroll-container::-webkit-scrollbar-thumb {
-            background-color: #cbd5e1;
-            /* slate-300 */
-            border-radius: 3px;
-        }
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
 
-        .table-scroll-container::-webkit-scrollbar-track {
-            background-color: #f1f5f9;
-            /* slate-100 */
-        }
-
-        /* Ensure hidden class takes precedence */
-
-        .hidden {
-            display: none !important;
-        }
-    </style>
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
 
-<body class="bg-slate-100 min-h-screen flex">
+<body class="bg-gradient-to-b from-purple-100 via-orange-100 to-white min-h-screen relative bg-fixed">
 
-    <!-- Sidebar -->
-    <aside class="w-64 bg-white p-5 border-r border-slate-200 flex flex-col fixed inset-y-0 left-0 z-30">
-        <div class="flex items-center space-x-2 mb-8">
-            <div class="bg-indigo-600 p-2 rounded-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-            </div>
-            <h1 class="text-xl font-bold text-slate-800">BookingApp™</h1>
-        </div>
-        <div class="bg-slate-50 p-3 rounded-lg mb-6">
-            <div class="flex items-center space-x-2">
-                <img src="https://i.pravatar.cc/40?u=dashboardUser" alt="User" class="w-8 h-8 rounded-full">
-                <div>
-                    <p class="text-sm font-semibold text-slate-700">Dashboard User</p>
-                    <p class="text-xs text-slate-500">พนักงาน</p>
-                </div>
-            </div>
-        </div>
-        <nav class="flex-grow space-y-1">
-            <p class="text-xs text-slate-400 uppercase font-semibold px-3 mb-2">Main Menu</p>
-            <a href="book.html"
-                class="flex items-center space-x-3 px-3 py-2.5 text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 rounded-md text-sm font-medium font-thai">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <span>สร้างการจอง</span>
-            </a>
-            <a href="Apppointment.html"
-                class="flex items-center space-x-3 px-3 py-2.5 text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 rounded-md text-sm font-medium font-thai">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <span>จัดการนัดหมาย</span></a>
-            <a href="service.html"
-                class="flex items-center space-x-3 px-3 py-2.5 bg-indigo-100 text-indigo-700 rounded-md text-sm font-semibold">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                <span>บริการ</span>
-            </a>
-            <a href="member.html"
-                class="flex items-center space-x-3 px-3 py-2.5 text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 rounded-md text-sm font-medium font-thai">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-                <span>จัดการสมาชิก</span>
-            </a>
-            <a href="setting.html"
-                class="flex items-center space-x-3 px-3 py-2.5 text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 rounded-md text-sm font-medium font-thai">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                <span>ตั้งค่า</span>
-            </a>
-        </nav>
-    </aside>
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-50">
+    <div class="spinner"></div>
+  </div>
 
-    <!-- Main Content -->
-    <main class="ml-64 flex-1 flex flex-col">
-        <!-- Top bar -->
-        <header class="bg-white border-b border-slate-200 p-4 flex items-center justify-between sticky top-0 z-20">
-            <div class="relative w-1/3">
-                <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </span>
-                <input type="text" id="serviceSearch" placeholder="ค้นหาบริการ..."
-                    class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 font-thai">
-            </div>
-            <div class="flex items-center space-x-4">
-                <button class="text-slate-500 hover:text-slate-700 relative">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                    </svg>
-                    <span
-                        class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">1</span>
-                </button>
-                <img src="https://i.pravatar.cc/40?u=admin" alt="Admin" class="w-8 h-8 rounded-full">
-            </div>
-        </header>
+  <!-- Custom Confirm Overlay -->
+  <div id="customAlertOverlay" class="fixed inset-0 invisible items-center justify-center bg-black bg-opacity-50 z-50">
+    <div class="bg-white p-6 rounded shadow-lg text-center w-80">
+      <p id="customAlertMessage" class="mb-6 text-gray-700 text-sm"></p>
+      <div id="customAlertButtons" class="flex justify-center gap-4">
+        <button id="customAlertCancel" class="bg-gray-300 text-gray-800 px-4 py-2 rounded">ยกเลิก</button>
+        <button id="customAlertOk" class="bg-indigo-600 text-white px-4 py-2 rounded">ตกลง</button>
+      </div>
+    </div>
+  </div>
 
-        <!-- Page Content -->
-        <div class="flex-1 p-6 overflow-y-auto">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-2xl font-semibold text-slate-800 font-thai">🛠️ จัดการบริการ</h1>
-                <button onclick="showAddForm()"
-                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md text-sm flex items-center space-x-2 font-thai">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                            d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    <span>เพิ่มบริการใหม่</span>
-                </button>
-            </div>
+  <main class="max-w-lg mx-auto p-4">
+    <h1 class="text-xl font-bold mb-4">หน้าจัดการนัดหมาย (เฉพาะของคุณ)</h1>
 
-            <!-- Form Section -->
-            <section id="formSection" class="bg-white p-6 rounded-lg shadow mb-6 hidden">
-                <h2 class="text-lg font-medium text-slate-700 mb-4 font-thai" id="formTitle">เพิ่มบริการ</h2>
-                <form id="serviceForm" class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                    <div class="md:col-span-2">
-                        <label for="form-id" class="block text-sm font-medium text-slate-700 font-thai">ไอดี</label>
-                        <input type="text" id="form-id" name="ไอดี" placeholder="ระบบสร้างอัตโนมัติ"
-                            class="mt-1 block w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-md text-sm shadow-sm"
-                            readonly>
-                    </div>
-                    <div>
-                        <label for="form-service-name"
-                            class="block text-sm font-medium text-slate-700 font-thai">ชื่อบริการ <span
-                                class="text-red-500">*</span></label>
-                        <input type="text" id="form-service-name" name="รายการ" placeholder="เช่น ตัดผม, ทำสีผม"
-                            required
-                            class="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 font-thai">
-                    </div>
-                    <div>
-                        <label for="form-price" class="block text-sm font-medium text-slate-700 font-thai">ราคา (บาท)
-                            <span class="text-red-500">*</span></label>
-                        <input type="number" id="form-price" name="ราคา" placeholder="เช่น 300" required
-                            class="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 font-thai">
-                    </div>
-                    <div class="md:col-span-2">
-                        <label for="form-description"
-                            class="block text-sm font-medium text-slate-700 font-thai">รายละเอียดบริการ</label>
-                        <textarea id="form-description" name="รายละเอียด"
-                            placeholder="อธิบายเกี่ยวกับบริการเพิ่มเติม (ถ้ามี)" rows="3"
-                            class="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md text-sm shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 font-thai"></textarea>
-                    </div>
-                    <div class="md:col-span-2">
-                        <label for="imgInput"
-                            class="block text-sm font-medium text-slate-700 font-thai">รูปภาพประกอบ</label>
-                        <input type="file" id="imgInput" accept="image/*"
-                            class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                        <img id="imgPreview"
-                            class="hidden w-40 h-32 mt-2 object-cover rounded-md border border-slate-200">
-                        <input type="hidden" name="รูปภาพOLD" id="รูปภาพOLD">
-                    </div>
-                    <div class="md:col-span-2 flex justify-end space-x-3 mt-2">
-                        <button type="button" onclick="hideForm()"
-                            class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium py-2 px-4 rounded-md text-sm font-thai">ยกเลิก</button>
-                        <button type="submit"
-                            class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md text-sm flex items-center space-x-2 font-thai">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20"
-                                fill="currentColor">
-                                <path
-                                    d="M7.5 1C6.11929 1 5 2.11929 5 3.5V4H4C3.44772 4 3 4.44772 3 5V17C3 17.5523 3.44772 18 4 18H16C16.5523 18 17 17.5523 17 17V5C17 4.44772 16.5523 4 16 4H15V3.5C15 2.11929 13.8807 1 12.5 1H7.5ZM7 3.5C7 3.22386 7.22386 3 7.5 3H12.5C12.7761 3 13 3.22386 13 3.5V4H7V3.5Z M6 6H14V16H6V6Z" />
-                            </svg>
-                            <span>บันทึกบริการ</span>
-                        </button>
-                    </div>
-                </form>
-            </section>
+    <!-- ตัวกรอง: สาขา, สถานะ, เรียงวันที่ -->
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
+      <select id="branchFilter" class="bg-white p-2 border rounded-lg">
+        <option value="">ทุกสาขา</option>
+      </select>
+      <select id="statusFilter" class="bg-white p-2 border rounded-lg">
+        <option value="">ทั้งหมด</option>
+        <option value="รอการยืนยัน">รอการยืนยัน</option>
+        <option value="ยืนยันแล้ว">ยืนยันแล้ว</option>
+        <option value="ยกเลิก">ยกเลิก</option>
+        <option value="เสร็จสิ้น">เสร็จสิ้น</option>
+      </select>
+      <select id="dateSort" class="bg-white p-2 border rounded-lg">
+        <option value="latest">วันที่ล่าสุด</option>
+        <option value="oldest">วันที่เก่าสุด</option>
+      </select>
+    </div>
 
-            <!-- Table Section -->
-            <section class="bg-white shadow rounded-lg overflow-hidden">
-                <div id="serviceTableContainer" class="overflow-x-auto table-scroll-container">
-                </div>
-            </section>
-        </div>
-    </main>
+    <!-- ตารางแสดงผล -->
+    <table class="w-full bg-white rounded-lg shadow text-sm">
+      <thead>
+        <tr>
+          <th class="bg-[#2F1A87] text-white p-2 text-left rounded-tl-lg">ชื่อ</th>
+          <th class="bg-[#2F1A87] text-white p-2 text-left">สาขา</th>
+          <th class="bg-[#2F1A87] text-white p-2 text-left">วันที่</th>
+          <th class="bg-[#2F1A87] text-white p-2 text-center">สถานะ</th>
+          <th class="bg-[#2F1A87] text-white p-2 text-center rounded-tr-lg">ดู</th>
+        </tr>
+      </thead>
+      <tbody id="dataBody">
+        <!-- ข้อมูลจะถูกเติมที่นี่ -->
+      </tbody>
+    </table>
 
-    <script>
-        const DETAILS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxg0a8Niz8RExGtxUQz1lUCfBWg5Z7QOnjyWOTQ005JoBhGPyviWAsBRjGztmZ_rUEhsQ/exec';
+    <!-- Pagination Controls -->
+    <div id="pagination" class="flex justify-center items-center space-x-1 mt-4 text-sm"></div>
 
-        const serviceSearchInput = document.getElementById('serviceSearch');
-        let allServicesData = []; // Store all services for client-side search
+    <!-- เก็บค่า User ID ของ LIFF -->
+    <input type="hidden" id="useridlineFilter" />
+  </main>
 
-        function showAddForm(title = 'เพิ่มบริการใหม่', isEdit = false) {
-            document.getElementById('formSection').classList.remove('hidden');
-            document.getElementById('formTitle').textContent = title;
-            if (!isEdit) {
-                document.getElementById('serviceForm').reset();
-                document.getElementById('imgPreview').classList.add('hidden');
-                document.getElementById('imgPreview').src = '';
-                document.getElementById('รูปภาพOLD').value = '';
-                document.querySelector('[name="ไอดี"]').value = '';
-            }
-            document.getElementById('formSection').scrollIntoView({
-                behavior: 'smooth'
-            });
+<!--   <script src="Config.js"></script> -->
+  <script>
+    const DETAILS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwRDs7takd9ozlconIGh3kVaBBzjMKP1Il_cOSVZ_RMkJNigputZPMFvA3GYtSi1QOCDA/exec';
+    const LIFF_ID_HIS = '2007432636-g5YyoKjr';
+    const rowsPerPage = 10;
+    let currentData = [];
+    let currentPage = 1;
+
+    const showLoading = () => document.getElementById('loadingOverlay').classList.remove('hidden');
+    const hideLoading = () => document.getElementById('loadingOverlay').classList.add('hidden');
+
+    // ฟังก์ชันแสดง dialog ยืนยัน
+    function confirmAction(message, action, id, branchId) {
+      const overlay = document.getElementById('customAlertOverlay');
+      const alertMessage = document.getElementById('customAlertMessage');
+      const btnOk = document.getElementById('customAlertOk');
+      const btnCancel = document.getElementById('customAlertCancel');
+
+      alertMessage.textContent = message;
+      overlay.classList.replace('invisible', 'flex');
+
+      btnOk.textContent = 'ตกลง';
+      btnCancel.textContent = 'ยกเลิก';
+      btnOk.style.display = btnCancel.style.display = 'inline-block';
+
+      btnCancel.onclick = () => {
+        overlay.classList.replace('flex', 'invisible');
+      };
+
+      btnOk.onclick = () => {
+        btnOk.style.display = btnCancel.style.display = 'none';
+        alertMessage.textContent = 'กำลังดำเนินการ…';
+        showLoading();
+
+        let url = `${DETAILS_SCRIPT_URL}?action=${action}&id=${encodeURIComponent(id)}`;
+        if (branchId) {
+          url += `&branchId=${encodeURIComponent(branchId)}`;
         }
 
-        function hideForm() {
-            document.getElementById('formSection').classList.add('hidden');
-            document.getElementById('serviceForm').reset();
-            document.getElementById('imgPreview').classList.add('hidden');
-            document.getElementById('imgPreview').src = '';
+        fetch(url, { method: 'POST' })
+          .then(res => {
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return res.text();
+          })
+          .then(() => {
+            alertMessage.textContent = 'ดำเนินการสำเร็จ';
+            btnOk.textContent = 'ปิด';
+            btnOk.style.display = 'inline-block';
+            hideLoading();
+            btnOk.onclick = () => {
+              overlay.classList.replace('flex', 'invisible');
+              loadData();
+            };
+          })
+          .catch(err => {
+            console.error(err);
+            hideLoading();
+            alertMessage.textContent = 'เกิดข้อผิดพลาด ลองใหม่อีกครั้ง';
+            btnOk.textContent = 'ลองใหม่';
+            btnCancel.textContent = 'ยกเลิก';
+            btnOk.style.display = btnCancel.style.display = 'inline-block';
+            btnOk.onclick = () => confirmAction(message, action, id, branchId);
+            btnCancel.onclick = () => overlay.classList.replace('flex', 'invisible');
+          });
+      };
+    }
+
+    // เมื่อโหลดหน้า ให้ทำ LIFF init และดึง profile
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        await liff.init({ liffId: LIFF_ID_HIS });
+        if (!liff.isLoggedIn()) {
+          liff.login({ redirectUri: window.location.href });
+          return;
         }
+        const profile = await liff.getProfile();
+        document.getElementById('useridlineFilter').value = profile.userId;
 
-        function setupImagePreview() {
-            const imgInput = document.getElementById('imgInput');
-            const imgPreview = document.getElementById('imgPreview');
-            imgInput.addEventListener('change', function () {
-                const file = this.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        imgPreview.src = e.target.result;
-                        imgPreview.classList.remove('hidden');
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    imgPreview.classList.add('hidden');
-                    imgPreview.src = ''; // Clear preview if no file selected
-                }
-            });
-        }
-
-        function processImageForUpload(formElement, dataObject) {
-            return new Promise(resolve => {
-                const imgInput = formElement.querySelector('#imgInput');
-                const oldImageValue = formElement.querySelector('#รูปภาพOLD').value;
-
-                if (imgInput.files.length > 0) {
-                    const file = imgInput.files[0];
-                    const reader = new FileReader();
-                    reader.onloadend = function () {
-                        dataObject['รูปภาพBase64'] = reader.result.split(',')[1];
-                        dataObject['รูปภาพMimeType'] = file.type;
-                        dataObject['รูปภาพFilename'] = file.name; // Optional: send filename
-                        resolve();
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    dataObject['รูปภาพBase64'] = ''; // No new image
-                    dataObject['รูปภาพMimeType'] = '';
-                    dataObject['รูปภาพ'] = oldImageValue; // Keep old image URL if not changed
-                    resolve();
-                }
-            });
-        }
-
-        function loadServices() {
-            fetch(`${DETAILS_SCRIPT_URL}?action=fetchData`) // Assuming 'fetchData' is your GAS action for services
-                .then(response => {
-                    if (!response.ok) throw new Error(`Network error: ${response.statusText}`);
-                    return response.json();
-                })
-                .then(data => {
-                    allServicesData = Array.isArray(data) ? data : [];
-                    renderServiceTable(allServicesData);
-                })
-                .catch(error => {
-                    console.error('Error loading services:', error);
-                    document.getElementById('serviceTableContainer').innerHTML = `<p class="p-4 text-red-500 font-thai">เกิดข้อผิดพลาดในการโหลดข้อมูลบริการ: ${error.message}</p>`;
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'ผิดพลาด!',
-                        text: `ไม่สามารถโหลดข้อมูลบริการได้: ${error.message}`,
-                        customClass: {
-                            popup: 'font-thai'
-                        }
-                    });
-                });
-        }
-
-        function renderServiceTable(dataToRender) {
-            let html = `<table class="min-w-full divide-y divide-slate-200 text-sm">
-          <thead class="bg-slate-50">
-              <tr>
-                  <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider font-thai">รูปภาพ</th>
-                  <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider font-thai">ชื่อบริการ</th>
-                  <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider font-thai">รายละเอียด</th>
-                  <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider font-thai">ราคา</th>
-                  <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider font-thai">จัดการ</th>
-              </tr>
-          </thead>
-          <tbody class="bg-white divide-y divide-slate-200">`;
-
-            if (dataToRender.length === 0) {
-                html += `<tr><td colspan="5" class="px-4 py-4 text-center text-slate-500 font-thai">ไม่พบข้อมูลบริการ</td></tr>`;
-            } else {
-                dataToRender.forEach(service => {
-                    html += `<tr class="hover:bg-slate-50">
-              <td class="px-4 py-3 whitespace-nowrap">
-                  <img src="${service['รูปภาพ'] || 'https://via.placeholder.com/80x60.png?text=No+Image'}" alt="${service['รายการ']}" class="w-20 h-16 object-cover rounded-md">
-              </td>
-              <td class="px-4 py-3 align-top">
-                  <div class="font-medium text-slate-800 font-thai">${service['รายการ']}</div>
-                  <div class="text-xs text-slate-500 font-mono">ID: ${service['ไอดี'] || '-'}</div>
-              </td>
-              <td class="px-4 py-3 text-slate-600 align-top font-thai max-w-xs truncate" title="${service['รายละเอียด']}">${service['รายละเอียด'] || '-'}</td>
-              <td class="px-4 py-3 whitespace-nowrap text-slate-700 font-medium align-top font-thai">${service['ราคา'] ? parseFloat(service['ราคา']).toLocaleString('th-TH', { style: 'currency', currency: 'THB' }) : '-'}</td>
-              <td class="px-4 py-3 whitespace-nowrap text-sm font-medium align-top">
-                  <button onclick="editService('${service['ไอดี']}')" class="text-indigo-600 hover:text-indigo-900 mr-3 font-thai">แก้ไข</button>
-                  <button onclick="deleteService('${service['ไอดี']}')" class="text-red-600 hover:text-red-900 font-thai">ลบ</button>
-              </td>
-          </tr>`;
-                });
-            }
-            html += '</tbody></table>';
-            document.getElementById('serviceTableContainer').innerHTML = html;
-        }
-
-        serviceSearchInput.addEventListener('input', function () {
-            const searchTerm = this.value.toLowerCase();
-            const filteredServices = allServicesData.filter(service => {
-                return (service['รายการ'] && service['รายการ'].toLowerCase().includes(searchTerm)) ||
-                    (service['รายละเอียด'] && service['รายละเอียด'].toLowerCase().includes(searchTerm));
-            });
-            renderServiceTable(filteredServices);
+        // ผูก event ให้ตัวกรองทั้งสามตัว เมื่อมีการเปลี่ยนค่า ให้โหลดข้อมูลใหม่
+        ['branchFilter', 'statusFilter', 'dateSort'].forEach(id => {
+          document.getElementById(id).addEventListener('change', loadData);
         });
 
+        loadData();
+      } catch (err) {
+        console.error('LIFF Error:', err);
+        // ถ้า LIFF ผิดพลาด แสดง alert อย่างง่าย
+        alert('พบข้อผิดพลาดในการโหลด LIFF: ' + err.message);
+      }
+    });
 
-        document.getElementById('serviceForm').addEventListener('submit', async function (e) {
-            e.preventDefault();
-            const form = this;
-            const serviceData = {};
-            new FormData(form).forEach((value, key) => serviceData[key] = value);
+    // ฟังก์ชันหลัก: ดึงข้อมูลจาก GAS แล้วกรองตาม user, สาขา, สถานะ, แล้วจัดเรียงและแบ่งหน้า
+    async function loadData() {
+      const tbody = document.getElementById('dataBody');
+      const paginationEl = document.getElementById('pagination');
 
-            Swal.fire({
-                title: 'กำลังบันทึก...',
-                text: 'กรุณารอสักครู่',
-                allowOutsideClick: false,
-                didOpen: () => Swal.showLoading(),
-                customClass: {
-                    popup: 'font-thai'
-                }
-            });
+      // แสดงข้อความ "กำลังโหลด" ชั่วคราว
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center p-4 text-gray-500">กำลังโหลดข้อมูล...</td></tr>';
+      paginationEl.innerHTML = '';
 
-            try {
-                await processImageForUpload(form, serviceData); // Wait for image processing
+      try {
+        const res = await fetch(`${DETAILS_SCRIPT_URL}?action=fetchBookings`);
+        const allData = await res.json();
+        const uid = document.getElementById('useridlineFilter').value;
 
-                const response = await fetch(DETAILS_SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: 'insertOrUpdateService',
-                        data: serviceData
-                    })
-                });
-                const result = await response.json();
+        // กรองเฉพาะรายการที่ user นี้เป็นเจ้าของ (userlineid)
+        const ownData = allData.filter(d => d.userlineid === uid)
+          .map(d => ({
+            ...d,
+            // แปลงวันที่จาก "dd-mm-yyyy" เป็น Date object
+            parsedDate: new Date(d.date.split('-').reverse().join('-'))
+          }));
 
-                if (result.success || result.id) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'สำเร็จ!',
-                        text: 'บันทึกข้อมูลบริการเรียบร้อย',
-                        customClass: {
-                            popup: 'font-thai'
-                        }
-                    });
-                    form.reset();
-                    hideForm();
-                    loadServices();
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'ผิดพลาด!',
-                        text: result.message || 'ไม่สามารถบันทึกข้อมูลได้',
-                        customClass: {
-                            popup: 'font-thai'
-                        }
-                    });
-                }
-            } catch (error) {
-                console.error('Error submitting service form:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'ผิดพลาด!',
-                    text: 'เกิดข้อผิดพลาดในการเชื่อมต่อ',
-                    customClass: {
-                        popup: 'font-thai'
-                    }
-                });
-            }
+        // สร้างตัวเลือกสาขา จากข้อมูลของ user คนนี้
+        populateBranchFilter(ownData);
+
+        // จัดเรียงตามวันที่
+        const sorted = ownData.sort((a, b) =>
+          document.getElementById('dateSort').value === 'latest' ?
+            b.parsedDate - a.parsedDate :
+            a.parsedDate - b.parsedDate
+        );
+
+        // กรองตามสถานะ
+        const status = document.getElementById('statusFilter').value.toLowerCase();
+        // กรองตามสาขา (branchFilter)
+        const selectedBranch = document.getElementById('branchFilter').value;
+
+        currentData = sorted.filter(d =>
+          (!status || d.status.toLowerCase() === status) &&
+          (!selectedBranch || d.branchId === selectedBranch)
+        );
+
+        currentPage = 1;
+        displayPage(currentPage);
+      } catch (err) {
+        console.error(err);
+        alert('โหลดข้อมูลล้มเหลว');
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center p-4 text-red-500">ไม่สามารถโหลดข้อมูลได้</td></tr>';
+      }
+    }
+
+    // สร้างตัวเลือกสาขาจากข้อมูลที่มีของ user คนนี้
+    function populateBranchFilter(data) {
+      const branchFilter = document.getElementById('branchFilter');
+      const uniqueBranches = [...new Set(data.map(item => item.branchId || 'ไม่ระบุ'))].filter(b => b !== 'ไม่ระบุ').sort();
+      const currentSelected = branchFilter.value;
+
+      branchFilter.innerHTML = '<option value="">ทุกสาขา</option>';
+      uniqueBranches.forEach(branch => {
+        const option = document.createElement('option');
+        option.value = branch;
+        option.textContent = branch;
+        branchFilter.appendChild(option);
+      });
+      // หากค่าที่เลือกก่อนหน้านี้ยังมีอยู่ ให้เลือกไว้ต่อ
+      if (uniqueBranches.includes(currentSelected)) {
+        branchFilter.value = currentSelected;
+      } else {
+        branchFilter.value = '';
+      }
+    }
+
+    // ฟังก์ชันแบ่งหน้าและแสดงผลในตาราง
+    function displayPage(page) {
+      const tbody = document.getElementById('dataBody');
+      tbody.innerHTML = '';
+
+      if (currentData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center p-4 text-gray-500">ไม่พบข้อมูล</td></tr>';
+      } else {
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        const pageData = currentData.slice(start, end);
+
+        pageData.forEach(item => {
+          // แถวหลัก
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td class="p-2 border-b">${item.name}</td>
+            <td class="p-2 border-b">${item.branchId}</td>
+            <td class="p-2 border-b">${item.date}</td>
+            <td class="p-2 border-b text-center">${item.status}</td>
+            <td class="p-2 border-b text-center">
+              <button class="toggleDetail bg-[#2F1A87] text-white px-2 py-1 rounded">ดู</button>
+            </td>
+          `;
+          tbody.appendChild(row);
+
+          // แถวรายละเอียด (ซ่อนอยู่ก่อน)
+          const detailRow = document.createElement('tr');
+          detailRow.classList.add('hidden');
+          detailRow.innerHTML = `
+            <td colspan="5" class="bg-gray-50 p-4 text-sm">
+              <p><strong>ชื่อ:</strong> ${item.name}</p>
+              <p><strong>เบอร์โทร:</strong> ${item.phonenumber}</p>
+              <p><strong>บริการ:</strong> ${item.service}</p>
+              <p><strong>ราคา:</strong> ${item.price}</p>
+              <p><strong>วันที่:</strong> ${item.date}</p>
+              <p><strong>เวลา:</strong> ${item.time}</p>
+              <p><strong>หมายเหตุ:</strong> ${item.note || '-'}</p>
+              <p><strong>สถานะ:</strong> ${item.status}</p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <button class="actionBtn bg-yellow-500 text-white px-3 py-1 rounded" data-action="sendReminder" data-id="${item.idKey}" data-branch-id="${item.branchId}">🔔 แจ้งเตือน</button>
+                <button class="actionBtn bg-purple-600 text-white px-3 py-1 rounded" data-action="sendReminderWithPayment" data-id="${item.idKey}" data-branch-id="${item.branchId}">🔔 แจ้งชำระ</button>
+                <button class="actionBtn bg-gray-600 text-white px-3 py-1 rounded" data-action="sendReminderWithoutPayment" data-id="${item.idKey}" data-branch-id="${item.branchId}">🔔 ฟรี</button>
+                <button class="actionBtn bg-green-500 text-white px-3 py-1 rounded" data-action="confirmBooking" data-id="${item.idKey}" data-branch-id="${item.branchId}" ${item.status !== 'รอการยืนยัน' ? 'disabled style="opacity:.5"' : ''}>ยืนยัน</button>
+                <button class="actionBtn bg-red-500 text-white px-3 py-1 rounded" data-action="cancelBooking" data-id="${item.idKey}" data-branch-id="${item.branchId}" ${['ยกเลิก', 'เสร็จสิ้น'].includes(item.status) ? 'disabled style="opacity:.5"' : ''}>ยกเลิก</button>
+                <button class="actionBtn bg-blue-500 text-white px-3 py-1 rounded" data-action="completeBooking" data-id="${item.idKey}" data-branch-id="${item.branchId}" ${['ยกเลิก', 'เสร็จสิ้น'].includes(item.status) ? 'disabled style="opacity:.5"' : ''}>เสร็จสิ้น</button>
+              </div>
+            </td>
+          `;
+          tbody.appendChild(detailRow);
+
+          // ผูกเหตุการณ์สลับแถวรายละเอียด
+          row.querySelector('.toggleDetail').onclick = () => {
+            detailRow.classList.toggle('hidden');
+          };
         });
 
-        function editService(id) {
-            const serviceToEdit = allServicesData.find(s => s['ไอดี'] === id);
-            if (!serviceToEdit) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'ไม่พบข้อมูล',
-                    text: `ไม่พบข้อมูลบริการไอดี: ${id}`,
-                    customClass: {
-                        popup: 'font-thai'
-                    }
-                });
-                return;
-            }
+        // ผูกเหตุการณ์ให้ปุ่ม action ต่างๆ
+        document.querySelectorAll('.actionBtn').forEach(btn => {
+          btn.onclick = () => {
+            const action = btn.dataset.action;
+            const id = btn.dataset.id;
+            const branchId = btn.dataset.branchId;
+            confirmAction(`คุณต้องการดำเนินการ "${action}" หรือไม่?`, action, id, branchId);
+          };
+        });
+      }
 
-            const form = document.getElementById('serviceForm');
-            form.elements['ไอดี'].value = serviceToEdit['ไอดี'];
-            form.elements['รายการ'].value = serviceToEdit['รายการ'];
-            form.elements['รายละเอียด'].value = serviceToEdit['รายละเอียด'] || '';
-            form.elements['ราคา'].value = serviceToEdit['ราคา'];
-            form.elements['รูปภาพOLD'].value = serviceToEdit['รูปภาพ'] || ''; // Store old image URL
+      renderPagination();
+    }
 
-            const imgPreview = document.getElementById('imgPreview');
-            if (serviceToEdit['รูปภาพ']) {
-                imgPreview.src = serviceToEdit['รูปภาพ'];
-                imgPreview.classList.remove('hidden');
-            } else {
-                imgPreview.classList.add('hidden');
-                imgPreview.src = '';
-            }
-            document.getElementById('imgInput').value = ''; // Clear file input
+    // สร้างปุ่มแบ่งหน้า
+    function renderPagination() {
+      const container = document.getElementById('pagination');
+      container.innerHTML = '';
+      const totalPages = Math.ceil(currentData.length / rowsPerPage);
+      if (totalPages <= 1) return;
 
-            showAddForm(`แก้ไขบริการ: ${serviceToEdit['รายการ']}`, true);
+      // ปุ่ม "หน้าสุด"
+      const btnFirst = document.createElement('button');
+      btnFirst.textContent = 'หน้าสุด';
+      btnFirst.className = 'px-3 py-1 border rounded text-gray-700';
+      btnFirst.onclick = () => { currentPage = 1; displayPage(1); };
+      btnFirst.disabled = currentPage === 1;
+      if (currentPage === 1) btnFirst.classList.add('opacity-50', 'cursor-not-allowed');
+      container.appendChild(btnFirst);
+
+      // ปุ่มเลขหน้า (1 ... totalPages)
+      for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        btn.dataset.page = i;
+        btn.className = 'px-3 py-1 border rounded text-gray-700';
+        if (i === currentPage) {
+          btn.classList.remove('text-gray-700');
+          btn.classList.add('bg-indigo-600', 'text-white');
         }
+        btn.onclick = () => {
+          currentPage = i;
+          displayPage(i);
+        };
+        container.appendChild(btn);
+      }
 
-        function deleteService(id) {
-            Swal.fire({
-                title: 'ต้องการลบบริการนี้?',
-                text: `คุณแน่ใจหรือไม่ว่าต้องการลบบริการไอดี: ${id}?`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'ใช่, ลบเลย!',
-                cancelButtonText: 'ยกเลิก',
-                customClass: {
-                    popup: 'font-thai',
-                    title: 'font-thai',
-                    htmlContainer: 'font-thai',
-                    confirmButton: 'font-thai',
-                    cancelButton: 'font-thai'
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        title: 'กำลังลบ...',
-                        allowOutsideClick: false,
-                        didOpen: () => Swal.showLoading(),
-                        customClass: {
-                            popup: 'font-thai'
-                        }
-                    });
-                    fetch(DETAILS_SCRIPT_URL, {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            action: 'deleteService',
-                            id: id
-                        })
-                    })
-                        .then(response => response.json())
-                        .then(res => {
-                            if (res.success) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'ลบสำเร็จ!',
-                                    text: 'บริการถูกลบออกจากระบบแล้ว',
-                                    customClass: {
-                                        popup: 'font-thai'
-                                    }
-                                });
-                                loadServices();
-                            } else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'ผิดพลาด!',
-                                    text: res.message || 'ไม่สามารถลบบริการได้',
-                                    customClass: {
-                                        popup: 'font-thai'
-                                    }
-                                });
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error deleting service:', error);
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'ผิดพลาด!',
-                                text: 'เกิดข้อผิดพลาดในการเชื่อมต่อ',
-                                customClass: {
-                                    popup: 'font-thai'
-                                }
-                            });
-                        });
-                }
-            });
-        }
-
-        // Initial Setup
-        setupImagePreview();
-        loadServices();
-    </script>
+      // ปุ่ม "หลังสุด"
+      const btnLast = document.createElement('button');
+      btnLast.textContent = 'หลังสุด';
+      btnLast.className = 'px-3 py-1 border rounded text-gray-700';
+      btnLast.onclick = () => { currentPage = totalPages; displayPage(totalPages); };
+      btnLast.disabled = currentPage === totalPages;
+      if (currentPage === totalPages) btnLast.classList.add('opacity-50', 'cursor-not-allowed');
+      container.appendChild(btnLast);
+    }
+  </script>
 </body>
 
 </html>
